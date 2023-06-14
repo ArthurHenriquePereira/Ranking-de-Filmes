@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-public class TelaRank extends JFrame {
+public class FrameRank extends JFrame {
 
 	private JPanel contentPane;
 
@@ -17,7 +17,7 @@ public class TelaRank extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TelaRank frame = new TelaRank();
+					FrameRank frame = new FrameRank();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -29,7 +29,7 @@ public class TelaRank extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public TelaRank() {
+	public FrameRank() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
