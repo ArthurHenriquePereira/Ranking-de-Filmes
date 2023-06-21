@@ -15,6 +15,7 @@ import javax.swing.table.DefaultTableModel;
 import Controle.RankingBD;
 import Modelo.Ranking;
 
+
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -25,6 +26,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import java.awt.SystemColor;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class JanelaInserirVotar extends JFrame {
 
@@ -34,6 +38,7 @@ public class JanelaInserirVotar extends JFrame {
 	private JTextField txtExcluiNome;
 	private JTextField txtVotos;
 	private JTextField txtInserirFilme;
+	private JTextField txtId;
 
 	/**
 	 * Launch the application.
@@ -107,7 +112,7 @@ public class JanelaInserirVotar extends JFrame {
 				new Object[][] {
 				},
 				new String[] {
-					"Posi\u00E7\u00E3o", "Filme", "Votos"
+					"ID", "Posi\u00E7\u00E3o", "Filme", "Votos"
 				}
 			));
 			scrollPane.setViewportView(tabelaFilmes);
@@ -151,12 +156,17 @@ public class JanelaInserirVotar extends JFrame {
 			contentPane.add(lbllblInserirFilme);
 			
 			txtInserirFilme = new JTextField();
-			txtInserirFilme.setEditable(false);
 			txtInserirFilme.setColumns(10);
 			txtInserirFilme.setBounds(632, 855, 188, 20);
 			contentPane.add(txtInserirFilme);
 			
 			JButton btnInserir = new JButton("Inserir Filme");
+			btnInserir.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					CadastrarFilme();
+					listar();
+				}
+			});
 			btnInserir.setBounds(892, 854, 106, 23);
 			contentPane.add(btnInserir);
 			
@@ -167,6 +177,16 @@ public class JanelaInserirVotar extends JFrame {
 			JButton btnVotar = new JButton("Votar");
 			btnVotar.setBounds(731, 901, 89, 23);
 			contentPane.add(btnVotar);
+			
+			txtId = new JTextField();
+			txtId.setEnabled(false);
+			txtId.setDisabledTextColor(SystemColor.menu);
+			txtId.setBackground(SystemColor.menu);
+			txtId.setBorder(null);
+			txtId.setEditable(false);
+			txtId.setBounds(512, 788, 86, 20);
+			contentPane.add(txtId);
+			txtId.setColumns(10);
 		
 		try {
 			RankingBD rankingbd = new RankingBD();
@@ -177,6 +197,7 @@ public class JanelaInserirVotar extends JFrame {
 			ArrayList<Ranking> lista = rankingbd.pesquisarFilmes();
 			for(int num = 0 ; num < lista.size() ; num ++) {
 				model.addRow(new Object [] {
+						lista.get(num).getIdFilme(),
 						lista.get(num).getPosicaoFilme(),
 						lista.get(num).getNomeFilme(),
 						lista.get(num).getVotosFilme(),			
@@ -192,11 +213,53 @@ public class JanelaInserirVotar extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 1) {
                 	int row = tabelaFilmes.getSelectedRow();
-                    txtExcluiNome.setText(tabelaFilmes.getValueAt(row, 0).toString());
-                    txtPosicao.setText(tabelaFilmes.getValueAt(row, 1).toString());
-                    txtVotos.setText(tabelaFilmes.getValueAt(row, 2).toString());
+                	txtId.setText(tabelaFilmes.getValueAt(row, 0).toString());
+                    txtExcluiNome.setText(tabelaFilmes.getValueAt(row, 1).toString());
+                    txtPosicao.setText(tabelaFilmes.getValueAt(row, 2).toString());
+                    txtVotos.setText(tabelaFilmes.getValueAt(row, 3).toString());
                 }
             }
         });
+		
+		
+	}
+	public void listar() {
+	try {
+		RankingBD rankingbd = new RankingBD();
+
+		DefaultTableModel model = (DefaultTableModel) tabelaFilmes.getModel();
+		model.setNumRows(0);
+
+		ArrayList<Ranking> lista = rankingbd.pesquisarFilmes();
+		for(int num = 0 ; num < lista.size() ; num ++) {
+			model.addRow(new Object [] {
+					lista.get(num).getIdFilme(),
+					lista.get(num).getPosicaoFilme(),
+					lista.get(num).getNomeFilme(),
+					lista.get(num).getVotosFilme(),			
+
+			});
+		}
+
+	} catch (Exception e) {
+		e.printStackTrace();
+		JOptionPane.showMessageDialog(null,"Erro no Listar Valores" + e);
+	}
+	}
+	private void CadastrarFilme() {
+		String nome;
+		int posicao, votos;
+
+		nome = txtInserirFilme.getText();
+		posicao = 0;
+		votos = 0;
+		
+		Ranking filme = new Ranking();
+		filme.setNomeFilme(nome);
+		filme.setPosicaoFilme(posicao);
+		filme.setVotosFilme(votos);
+
+		RankingBD rankBD = new RankingBD();
+		rankBD.cadastrarFilme(filme);
 	}
 }

@@ -43,4 +43,28 @@ public class RankingBD {
 		return lista;
 	}
 	
+	public void cadastrarFilme(Ranking filme) {
+		String sql = "insert into filme (posicaoFilme, nomeFilme,  votosFilme) values (?,?,?)";
+		
+		conn = new Conexao().faz_conexao();
+		
+		try {
+			
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, filme.getPosicaoFilme());
+			stmt.setString(2, filme.getNomeFilme());
+			stmt.setInt(3, filme.getVotosFilme());			
+			
+			stmt.execute();
+			stmt.close();
+
+		
+			JOptionPane.showMessageDialog(null, "FIlme inserido com sucesso!");
+			
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Preencha os campos para cadastrar!");
+		}
+		
+	}
+	
 }
