@@ -15,7 +15,6 @@ import javax.swing.table.DefaultTableModel;
 import Controle.RankingBD;
 import Modelo.Ranking;
 
-
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -39,7 +38,6 @@ public class JanelaInserirVotar extends JFrame {
 	private JTextField txtVotos;
 	private JTextField txtInserirFilme;
 	private JTextField txtId;
-
 	/**
 	 * Launch the application.
 	 */
@@ -109,12 +107,12 @@ public class JanelaInserirVotar extends JFrame {
 		
 		tabelaFilmes = new JTable();
 		tabelaFilmes.setModel(new DefaultTableModel(
-				new Object[][] {
-				},
-				new String[] {
-					"ID", "Posi\u00E7\u00E3o", "Filme", "Votos"
-				}
-			));
+			new Object[][] {
+			},
+			new String[] {
+				"ID", "Posi\u00E7\u00E3o", "Filme", "Votos"
+			}
+		));
 			scrollPane.setViewportView(tabelaFilmes);
 			
 			JLabel lblPosicao = new JLabel("Posição:");
@@ -148,6 +146,12 @@ public class JanelaInserirVotar extends JFrame {
 			txtVotos.setColumns(10);
 			
 			JButton btnExcluir = new JButton("Excluir filme");
+			btnExcluir.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					excluirFilme();
+					listar();
+				}
+			});
 			btnExcluir.setBounds(1262, 787, 106, 23);
 			contentPane.add(btnExcluir);
 			
@@ -175,6 +179,18 @@ public class JanelaInserirVotar extends JFrame {
 			contentPane.add(lblVotarFilme);
 			
 			JButton btnVotar = new JButton("Votar");
+			btnVotar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					 int row = tabelaFilmes.getSelectedRow(); 
+				     int column = 0; 
+				     int idFilme = (int) tabelaFilmes.getValueAt(row, column);
+				     RankingBD filmeControle = new RankingBD();
+				        
+				     filmeControle.aumentarVotosFilme(idFilme);
+				     filmeControle.atualizarPosicoesFilmes();
+				     listar();
+				}
+			});
 			btnVotar.setBounds(731, 901, 89, 23);
 			contentPane.add(btnVotar);
 			
@@ -213,9 +229,9 @@ public class JanelaInserirVotar extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 1) {
                 	int row = tabelaFilmes.getSelectedRow();
-                	txtId.setText(tabelaFilmes.getValueAt(row, 0).toString());
-                    txtExcluiNome.setText(tabelaFilmes.getValueAt(row, 1).toString());
-                    txtPosicao.setText(tabelaFilmes.getValueAt(row, 2).toString());
+                	txtId.setText(tabelaFilmes.getValueAt(row, 0).toString());   
+                    txtPosicao.setText(tabelaFilmes.getValueAt(row, 1).toString());
+                    txtExcluiNome.setText(tabelaFilmes.getValueAt(row, 2).toString());
                     txtVotos.setText(tabelaFilmes.getValueAt(row, 3).toString());
                 }
             }
@@ -249,7 +265,7 @@ public class JanelaInserirVotar extends JFrame {
 	private void CadastrarFilme() {
 		String nome;
 		int posicao, votos;
-
+	
 		nome = txtInserirFilme.getText();
 		posicao = 0;
 		votos = 0;
@@ -261,5 +277,17 @@ public class JanelaInserirVotar extends JFrame {
 
 		RankingBD rankBD = new RankingBD();
 		rankBD.cadastrarFilme(filme);
+	}
+	
+	private void excluirFilme() {
+		int id;
+
+		id = Integer.parseInt(txtId.getText());
+
+		Ranking filme = new Ranking();
+		filme.setIdFilme(id);
+
+		RankingBD rankBD = new RankingBD();
+		rankBD.excluirFilme(filme);
 	}
 }
