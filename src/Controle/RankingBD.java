@@ -144,4 +144,28 @@ public class RankingBD {
 				JOptionPane.showMessageDialog(null,"Erro no Banco de Dados ao excluir -> " + e);
 			}
 		}
+	 public ArrayList <Ranking> pesquisarFilmesSemZero(){
+			
+			String selectsql = "select * from filme where posicaoFilme = (SELECT MAX(posicaoFilme) FROM filme)";
+			conn = new Conexao().faz_conexao();
+
+			try {
+				stmt =  conn.prepareStatement(selectsql);
+				rs = stmt.executeQuery();
+				
+				while(rs.next()) {
+					Ranking rank = new Ranking();
+					rank.setIdFilme(rs.getInt("idFilme"));
+					rank.setNomeFilme(rs.getString("nomeFilme"));
+					rank.setPosicaoFilme(rs.getInt("posicaoFilme"));
+					rank.setVotosFilme(rs.getInt("votosFilme"));
+					
+					lista.add(rank);
+										
+				}
+			} catch (SQLException e) {
+				JOptionPane.showMessageDialog(null,"Erro no Banco de Dados ao pesquisar os filmes -> " + e);
+			}
+			return lista;
+		}
 }
