@@ -265,9 +265,13 @@ public class JanelaInserirVotar extends JFrame {
 	private void CadastrarFilme() {
 		String nome;
 		int posicao, votos;
-	
+		int ultimo = 0;
+		RankingBD teste = new RankingBD();
+		ArrayList<Ranking> lista = teste.pesquisarFilmesSemZero();
+		for(int num = 0 ; num < lista.size() ; num ++) {
+		ultimo = lista.get(num).getPosicaoFilme();}
 		nome = txtInserirFilme.getText();
-		posicao = 0;
+		posicao = ultimo + 1;
 		votos = 0;
 		
 		Ranking filme = new Ranking();
